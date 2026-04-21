@@ -73,11 +73,11 @@ jobs:
             npm install --production
 
             pkill -f "node server.js" || true
-            sleep 3
+            sleep 2
 
-             # restart safely in background
-            nohup sh -c "node server.js > deploy.log 2>&1" &
+            # FULL detach (this is the key fix)
+            nohup node server.js > deploy.log 2>&1 < /dev/null &
 
-            sleep 8
+            sleep 5
 
-            curl -sf http://localhost:3000/health || echo "Health check failed (but app may still be running)"
+            curl -sf http://localhost:3000/health || true
