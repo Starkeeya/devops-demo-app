@@ -65,19 +65,21 @@ jobs:
       - name: Restart application
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.DROPLET_IP }}
-          username: root
-          password: ${{ secrets.DROPLET_PASSWORD }}
-          script: |
-            cd /opt/devops-demo-app
-            npm install --production
-            # Stop any running instance (|| true prevents failure if none running)
-            pkill -f "node server.js" || true
-            # Wait for the process to fully stop
-            sleep 2
-            # Start the app in the background, log output to deploy.log
-            nohup node server.js > deploy.log 2>&1 &
-            # Wait for the server to start
-            sleep 3
-            # Verify the health endpoint
-            curl -sf http://localhost:3000/health && echo " — Deploy successful!" || echo " — WARNING: Health check failed!"
+        host: ${{ secrets.DROPLET_IP }}
+        username: root
+    password: ${{ secrets.DROPLET_PASSWORD }}
+    script: |
+      cd /opt/devops-demo-app
+      npm install --production
+
+      # safer restart
+      pkill -f "node server.js" || echo "No existing process"
+
+      sleep 3
+
+      nohup node server.js > deploy.log 2>&1 &
+      disown
+
+      sleep 5
+
+      curl -sf http://localhost:3000/health && echo "SUCCESS" || echo "FAILED"
