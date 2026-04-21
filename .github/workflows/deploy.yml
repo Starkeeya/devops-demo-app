@@ -63,21 +63,20 @@ jobs:
       # - Start the app in the background
       # - Verify the health endpoint responds with "OK"
       - name: Restart application
-  uses: appleboy/ssh-action@v1.0.3
-  with:
-    host: ${{ secrets.DROPLET_IP }}
-    username: root
-    password: ${{ secrets.DROPLET_PASSWORD }}
-    script: |
-      cd /opt/devops-demo-app
-      npm install --production
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.DROPLET_IP }}
+          username: root
+          password: ${{ secrets.DROPLET_PASSWORD }}
+          script: |
+            cd /opt/devops-demo-app
+            npm install --production
 
-      pkill -f "node server.js" || true
-      sleep 3
+            pkill -f "node server.js" || true
+            sleep 3
 
-      # fully detach process properly
-      nohup node server.js > deploy.log 2>&1 & disown
+            nohup node server.js > deploy.log 2>&1 & disown
 
-      sleep 5
+            sleep 5
 
-      curl -sf http://localhost:3000/health
+            curl -sf http://localhost:3000/health
