@@ -75,9 +75,9 @@ jobs:
             pkill -f "node server.js" || true
             sleep 2
 
-            # run completely detached from SSH
-            nohup setsid node server.js > deploy.log 2>&1 < /dev/null &
+            cd /opt/devops-demo-app
+            nohup node server.js > deploy.log 2>&1 < /dev/null &
+            disown
 
             sleep 5
-
-            curl -sf http://localhost:3000/health || true
+            curl -sf http://localhost:3000/health
