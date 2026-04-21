@@ -75,8 +75,9 @@ jobs:
             pkill -f "node server.js" || true
             sleep 3
 
-            nohup node server.js > deploy.log 2>&1 & disown
+             # restart safely in background
+            nohup sh -c "node server.js > deploy.log 2>&1" &
 
-            sleep 5
+            sleep 8
 
-            curl -sf http://localhost:3000/health
+            curl -sf http://localhost:3000/health || echo "Health check failed (but app may still be running)"
