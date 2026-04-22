@@ -75,11 +75,11 @@ jobs:
             pkill -f node || true
             sleep 2
 
-             # safer start (NO & at all)
+            # safer start (no background operator)
             nohup node server.js > deploy.log 2>&1 < /dev/null
 
-            sleep 5
+            sleep 3
 
             curl -sf http://localhost:3000/health || true
 
-            echo "Deployment complete"
+            echo "Restart complete"
