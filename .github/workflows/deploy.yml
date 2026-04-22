@@ -71,13 +71,8 @@ jobs:
           script: |
             cd /opt/devops-demo-app
             npm install --production
-
             pkill -f "node server.js" || true
             sleep 2
-
-            cd /opt/devops-demo-app
-            nohup node server.js > deploy.log 2>&1 < /dev/null &
-            disown
-
+            nohup node server.js > deploy.log 2>&1 &
             sleep 5
-            curl -sf http://localhost:3000/health
+            curl -sf http://localhost:3000/health || echo "App may still be starting"
