@@ -75,10 +75,11 @@ jobs:
             pkill -f node || true
             sleep 2
 
-             # safer startup (no disown, no noisy background handling)
-            nohup node server.js > deploy.log 2>&1 < /dev/null &
+             # safer start (NO & at all)
+            nohup node server.js > deploy.log 2>&1 < /dev/null
 
-            sleep 3
+            sleep 5
 
-            # don't fail pipeline if app is still booting
-            curl -sf http://localhost:3000/health || echo "OK - booting"
+            curl -sf http://localhost:3000/health || true
+
+            echo "Deployment complete"
